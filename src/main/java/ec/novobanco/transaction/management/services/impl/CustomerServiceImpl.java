@@ -1,7 +1,6 @@
 package ec.novobanco.transaction.management.services;
 
 import ec.novobanco.transaction.management.dto.customers.CustomerRequest;
-import ec.novobanco.transaction.management.dto.customers.CustomerResponse;
 import ec.novobanco.transaction.management.entities.CustomerEntity;
 import ec.novobanco.transaction.management.exception.DomainException;
 import ec.novobanco.transaction.management.repositories.CustomerRepository;
@@ -21,12 +20,8 @@ public class CustomerServiceImpl implements CustomerService {
      * {@inheritDoc}
      */
     @Override
-    public CustomerResponse findCustomerById(UUID id) throws DomainException {
-        return customerRepository.findById(id).map(
-                customer -> new CustomerResponse(
-                        customer.getId(), customer.getFullName()
-                )
-        ).orElseThrow(() -> new DomainException("Cliente no encontrado"));
+    public CustomerEntity findCustomerById(UUID id) throws DomainException {
+        return customerRepository.findById(id).orElseThrow(() -> new DomainException("Cliente no encontrado"));
     }
 
     /**
