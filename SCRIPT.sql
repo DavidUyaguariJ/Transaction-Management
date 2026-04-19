@@ -11,16 +11,20 @@ CREATE TABLE customers (
     created_at    DATETIME2         NOT NULL DEFAULT SYSUTCDATETIME()
 );
 
+CREATE SEQUENCE account_number_seq
+    START WITH 1000
+    INCREMENT BY 1;
+
 CREATE TABLE accounts (
     id             UNIQUEIDENTIFIER  NOT NULL DEFAULT NEWID() PRIMARY KEY,
-	account_number BIGINT IDENTITY(1000,1) NOT NULL UNIQUE,
+    account_number BIGINT NOT NULL DEFAULT NEXT VALUE FOR account_number_seq,
     customer_id    UNIQUEIDENTIFIER  NOT NULL,
     type           NVARCHAR(10)      NOT NULL,
     currency       NCHAR(3)          NOT NULL DEFAULT 'USD',
     balance        DECIMAL(19,4)     NOT NULL DEFAULT 0.0000,
     status         NVARCHAR(10)      NOT NULL DEFAULT 'ACTIVE',
     created_at     DATETIME2         NOT NULL DEFAULT SYSUTCDATETIME(),
-    updated_at     DATETIME2         NOT NULL DEFAULT SYSUTCDATETIME(),
+    updated_at     DATETIME2         NULL DEFAULT SYSUTCDATETIME(),
 
     CONSTRAINT fk_account_customer  FOREIGN KEY (customer_id)  REFERENCES customers(id),
     CONSTRAINT chk_balance_non_negative CHECK (balance >= 0),
