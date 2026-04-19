@@ -1,9 +1,10 @@
-package ec.novobanco.transaction.management.services;
+package ec.novobanco.transaction.management.services.impl;
 
 import ec.novobanco.transaction.management.dto.customers.CustomerRequest;
 import ec.novobanco.transaction.management.entities.CustomerEntity;
-import ec.novobanco.transaction.management.exception.DomainException;
+import ec.novobanco.transaction.management.exception.EntityNotFoundException;
 import ec.novobanco.transaction.management.repositories.CustomerRepository;
+import ec.novobanco.transaction.management.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ public class CustomerServiceImpl implements CustomerService {
      * {@inheritDoc}
      */
     @Override
-    public CustomerEntity findCustomerById(UUID id) throws DomainException {
-        return customerRepository.findById(id).orElseThrow(() -> new DomainException("Cliente no encontrado"));
+    public CustomerEntity findCustomerById(UUID id) throws EntityNotFoundException {
+        return customerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado"));
     }
 
     /**
