@@ -37,11 +37,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse createAccount(AccountRequest request) throws EntityNotFoundException {
         CustomerEntity customer = customerService.findCustomerById(request.customerId());
         log.info("Cliente encontrado {}", customer.getId());
-
+        if (request.balance().compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("La cuenta no puede tener valores negativos");
+        }
         AccountEntity entity = new AccountEntity();
         entity.setType(request.type());
         entity.setCurrency("USD");
-        entity.setBalance(request.balance() != null ? request.balance() : BigDecimal.ZERO);
+        entity.setBalance(request.balance());
         entity.setStatus(AccountStatus.ACTIVE);
         entity.setCreatedAt(Instant.now());
         entity.setUpdatedAt(Instant.now());
