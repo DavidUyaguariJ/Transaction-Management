@@ -1,8 +1,6 @@
 package ec.novobanco.transaction.management.services.impl;
 
-import ec.novobanco.transaction.management.dto.transactions.TransactionRequest;
-import ec.novobanco.transaction.management.dto.transactions.TransactionResponse;
-import ec.novobanco.transaction.management.dto.transactions.TransferRequest;
+import ec.novobanco.transaction.management.dto.transactions.*;
 import ec.novobanco.transaction.management.entities.AccountEntity;
 import ec.novobanco.transaction.management.entities.TransactionEntity;
 import ec.novobanco.transaction.management.enumerables.TransactionStatus;
@@ -13,11 +11,14 @@ import ec.novobanco.transaction.management.services.AccountService;
 import ec.novobanco.transaction.management.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -70,13 +71,33 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal balanceOrigin = accountService.applyBalance(origin, request.amount(), TransactionTypes.TRANSFER_OUT);
         BigDecimal balanceDest = accountService.applyBalance(dest, request.amount(), TransactionTypes.TRANSFER_IN);
         log.info("Generando registros vinculados a cliente: {}", originId);
-        buildAndSave(origin, dest, TransactionTypes.TRANSFER_OUT, request.amount(),
-                balanceOrigin, request.description());
-
-        return buildAndSave(dest, origin, TransactionTypes.TRANSFER_IN, request.amount(),
+        return buildAndSave(origin, dest, TransactionTypes.TRANSFER_OUT, request.amount(),
                 balanceOrigin, request.description());
     }
 
+    @Override
+    public TransactionHistoryList listHistory(UUID accountId, Pageable pageable) {
+        Page<TransactionEntity> transactionsPage = transactionRepository.findByAccount_Id(accountId, pageable);
+        List<TransactionHistoryResponse> dtoList = transactionsPage.getContent()
+                .stream()
+                .map(this::mapToHistoryResponse)
+                .toList();
+        return new TransactionHistoryList(dtoList, transactionsPage.getTotalElements());
+    }
+
+    private TransactionHistoryResponse mapToHistoryResponse(TransactionEntity entity) {
+        return new TransactionHistoryResponse(
+                entity.getId(),
+                entity.getId().toString(),
+                entity.getRelatedAccount() != null ? entity.getRelatedAccount().getId() : null,
+                entity.getType(),
+                entity.getAmount(),
+                entity.getBalanceAfter(),
+                entity.getStatus(),
+                entity.getDescription(),
+                entity.getCreatedAt()
+        );
+    }
 
     private TransactionResponse buildAndSave(AccountEntity account, AccountEntity relatedAccount, TransactionTypes type,
                                              BigDecimal amount, BigDecimal balanceAfter, String description) {

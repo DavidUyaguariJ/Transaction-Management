@@ -1,9 +1,13 @@
 package ec.novobanco.transaction.management.services;
 
+import ec.novobanco.transaction.management.dto.transactions.TransactionHistoryList;
 import ec.novobanco.transaction.management.dto.transactions.TransactionRequest;
 import ec.novobanco.transaction.management.dto.transactions.TransactionResponse;
 import ec.novobanco.transaction.management.dto.transactions.TransferRequest;
 import ec.novobanco.transaction.management.exception.DomainException;
+import org.springframework.data.domain.Pageable;
+
+import java.util.UUID;
 
 public interface TransactionService {
     /**
@@ -29,4 +33,12 @@ public interface TransactionService {
      * @throws DomainException Si falla alguna validación en cualquiera de las cuentas.
      */
     TransactionResponse transfer(TransferRequest request) throws DomainException;
+
+    /**
+     * Lista el historial de transacciones .
+     * @param accountId Datos de la consulta.
+     * @param pageable para paginar el historial.
+     * @return Lista paginada de las transacciones.
+     */
+    TransactionHistoryList listHistory(UUID accountId, Pageable pageable);
 }

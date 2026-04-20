@@ -97,9 +97,9 @@ class TransactionServiceImplTest {
         }
 
         @Test
-        @DisplayName("transferencia exitosa: se crean dos registros (débito y crédito)")
-        void transfer_success_persistsTwoRecords() throws DomainException {
-            AccountEntity origin = activeAccount(ACCOUNT_ID,    new BigDecimal("500.00"));
+        @DisplayName("transferencia exitosa: se crea solo registro de débito")
+        void transfer_success_persistsOneRecord() throws DomainException {
+            AccountEntity origin = activeAccount(ACCOUNT_ID, new BigDecimal("500.00"));
             AccountEntity dest   = activeAccount(OTHER_ACCOUNT, new BigDecimal("100.00"));
             when(accountService.findAndLockAccount(ACCOUNT_ID)).thenReturn(origin);
             when(accountService.findAndLockAccount(OTHER_ACCOUNT)).thenReturn(dest);
@@ -109,13 +109,12 @@ class TransactionServiceImplTest {
                     .thenReturn(new BigDecimal("300.00"));
             transactionService.transfer(transferRequest());
             ArgumentCaptor<TransactionEntity> captor = ArgumentCaptor.forClass(TransactionEntity.class);
-            verify(transactionRepository, times(2)).save(captor.capture());
-            assertThat(captor.getAllValues())
-                    .extracting(TransactionEntity::getType)
-                    .containsExactlyInAnyOrder(
-                            TransactionTypes.TRANSFER_OUT.name(),
-                            TransactionTypes.TRANSFER_IN.name()
-                    );
+            verify(transactionRepository, times(1)).save(captor.capture());
+            TransactionEntity saved = captor.getValue();
+            assertThat(saved.getType()).isEqualTo(TransactionTypes.TRANSFER_OUT.name());
+            assertThat(saved.getAccount().getId()).isEqualTo(ACCOUNT_ID);
+            assertThat(saved.getRelatedAccount().getId()).isEqualTo(OTHER_ACCOUNT);
+            assertThat(saved.getAmount()).isEqualTo(AMOUNT);
         }
 
         @Test
