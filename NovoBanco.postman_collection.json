@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "e717ff74-d227-4f92-963a-46ca861ccca8",
+    "name": "NovoBanco",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50285976",
+    "_collection_link": "https://go.postman.co/collection/50285976-e717ff74-d227-4f92-963a-46ca861ccca8?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"id\": null,\r\n  \"fullName\": \"Carlos Perez\",\r\n  \"email\": \"carlos.perez@novobanco.ec\",\r\n  \"documentId\": \"1728898432\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_local}}/api/customer",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "customer"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Create Account",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerId\": \"6D6A2156-CC5A-406D-94AA-AF125FA4B7BB\",\r\n  \"type\": \"SAVINGS\",\r\n  \"currency\": \"USD\",\r\n  \"balance\": 0.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_local}}/api/account",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "account"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url_local}}/api/account/1005",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "1005"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Deposit",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"accountId\": \"4F72A19D-D7E6-4E46-A7FB-1FE182D53F6A\",\r\n  \"amount\": 150.50,\r\n  \"description\": \"Acreditado por Rol de pagos\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_local}}/api/transaction/deposit",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"accountId\": \"FD46EAEC-1E67-4181-8C25-F5D5AA85CB68\",\r\n  \"amount\": 150.50,\r\n  \"description\": \"Acreditado por Rol de pagos\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_local}}/api/transaction/withdraw",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "transaction",
+                "withdraw"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"originAccountId\": \"36FCCCC3-5998-4092-B544-4811516B5BDC\",\r\n  \"destinationAccountId\": \"A9395E6C-9137-456C-93F0-515F3175EF60\",\r\n  \"amount\": 10.2,\r\n  \"description\": \"Transferencia desde banca móvil\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_local}}/api/transaction/transfer",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "transaction",
+                "transfer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List History",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"originAccountId\": \"36FCCCC3-5998-4092-B544-4811516B5BDC\",\r\n  \"destinationAccountId\": \"A9395E6C-9137-456C-93F0-515F3175EF60\",\r\n  \"amount\": 10.2,\r\n  \"description\": \"Transferencia desde banca móvil\"\r\n}"
+            },
+            "url": {
+              "raw": "{{url_local}}/api/transaction/transfer",
+              "host": [
+                "{{url_local}}"
+              ],
+              "path": [
+                "api",
+                "transaction",
+                "transfer"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "url_local",
+      "value": ""
+    }
+  ]
+}
