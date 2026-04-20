@@ -1,0 +1,52 @@
+name: CI - Test & Publish Image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run tests and generate full Maven site
+        run: mvn -U clean verify site
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t daviduyaguarij/novobanco-backend:${{ github.sha }} .
+
+      - name: Push image
+        run: |
+          docker push daviduyaguarij/novobanco-backend:${{ github.sha }}
+
+      - name: Tag latest
+        run: |
+            docker build -t daviduyaguarij/novobanco-backend:${{ github.sha }} .
+            docker tag daviduyaguarij/novobanco-backend:${{ github.sha }} daviduyaguarij/novobanco-backend:latest
+            docker push daviduyaguarij/novobanco-backend:${{ github.sha }}
+            docker push daviduyaguarij/novobanco-backend:latest
