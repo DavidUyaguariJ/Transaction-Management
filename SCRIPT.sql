@@ -35,7 +35,6 @@ CREATE TABLE accounts (
 
 CREATE TABLE transactions (
     id                 UNIQUEIDENTIFIER  NOT NULL DEFAULT NEWID() PRIMARY KEY,
-    reference          NVARCHAR(36)      NOT NULL UNIQUE,
     account_id         UNIQUEIDENTIFIER  NOT NULL,
     related_account_id UNIQUEIDENTIFIER  NULL,
     type               NVARCHAR(15)      NOT NULL,

@@ -2,22 +2,26 @@ package ec.novobanco.transaction.management.exception;
 
 import ec.novobanco.transaction.management.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(DomainException ex, HttpServletRequest request) {
+        log.error("Error: {}", ex.getMessage(), ex);
         ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
+        log.error("Error: {}", ex.getMessage(), ex);
         ErrorResponse error = new ErrorResponse(
                 "Internal server error",
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -28,6 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex, HttpServletRequest request) {
+        log.error("Error: {}", ex.getMessage(), ex);
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
