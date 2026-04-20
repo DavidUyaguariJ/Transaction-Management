@@ -1,0 +1,14 @@
+services:
+  app:
+    image: daviduyaguarij/novobanco-backend:latest
+    container_name: novobanco-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: "cadena de conexion"
+      DB_USER: "usuario"
+      DB_PASSWORD: "contraseña"
+
+networks:
+  bridge_network:
+    driver: bridge
