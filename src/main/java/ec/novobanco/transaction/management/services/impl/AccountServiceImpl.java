@@ -66,6 +66,27 @@ public class AccountServiceImpl implements AccountService {
      * {@inheritDoc}
      */
     @Override
+    public AccountResponse findAccountByAccountNumber(Long accountNumber) throws EntityNotFoundException {
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new EntityNotFoundException(
+                String.format("Cuenta no encontrada con id: %s", accountNumber)
+        ));
+        return new AccountResponse(
+                account.getId(),
+                account.getAccountNumber(),
+                new CustomerResponse(account.getCustomer().getId(), account.getCustomer().getFullName()),
+                account.getType(),
+                account.getCurrency(),
+                account.getBalance(),
+                account.getStatus(),
+                account.getCreatedAt(),
+                account.getUpdatedAt()
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Transactional
     public AccountEntity findAndLockAccount(UUID id) throws EntityNotFoundException {
         return accountRepository.findByIdForUpdate(id).orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada"));

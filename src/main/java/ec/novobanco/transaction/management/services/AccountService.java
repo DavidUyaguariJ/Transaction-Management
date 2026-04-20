@@ -21,10 +21,18 @@ public interface AccountService {
     AccountResponse createAccount(AccountRequest request) throws EntityNotFoundException;
 
     /**
-     * Busca la cuenta y adquiere un lock pesimista (SELECT FOR UPDATE).
-     * Lanza DomainException si no existe.
+     * Busca la cuenta y adquiere un lock pesimista.
+     * @param id identificador para buscar una cuenta.
+     * @throws EntityNotFoundException si no existe.
      */
     AccountEntity findAndLockAccount(UUID id) throws EntityNotFoundException;
+
+    /**
+     * Busca la cuenta para consultar saldos.
+     * @param accountNumber identificador para buscar una cuenta.
+     * @throws EntityNotFoundException si no existe.
+     */
+    AccountResponse findAccountByAccountNumber(Long accountNumber) throws EntityNotFoundException;
 
     /**
      * Actualiza el saldo de la cuenta basándose en el tipo de transacción.

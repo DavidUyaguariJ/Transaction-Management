@@ -17,4 +17,6 @@ public interface AccountRepository extends JpaRepository<AccountEntity, UUID> {
     @Query("SELECT a FROM AccountEntity a WHERE a.id = :id")
     Optional<AccountEntity> findByIdForUpdate(UUID id);
 
+    Optional<AccountEntity> findByAccountNumber(Long accountNumber);
+
 }
